@@ -34,6 +34,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import java.awt.Color;
+import javax.swing.JScrollPane;
 
 /** @see https://stackoverflow.com/questions/6067898 */
 public class recomendation_system extends JPanel {
@@ -53,22 +54,20 @@ public class recomendation_system extends JPanel {
     Data_Matrix data ;
     private JTextPane textPane;
     private JButton btnRun;
-    private JRadioButton rdbtnNewRadioButton_1;
-    private JRadioButton rdbtnNewRadioButton_2;
-    private JRadioButton rdbtnNewRadioButton;
+    private JRadioButton jaccard;
+    private JRadioButton cosine;
+    private JRadioButton pearson;
     private JButton btnNewButton_1;
     
 	public  static void main(String args[]) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame f = new JFrame("SpinSlider!");
+                JFrame f = new JFrame("recomendation system");
                 f.getContentPane().add(new recomendation_system());
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 f.pack();
                 f.setVisible(true);
-                String UserDir = System.getProperty("user.dir");
-                System.out.println(UserDir);
             }
         });
     }
@@ -152,8 +151,8 @@ public class recomendation_system extends JPanel {
          		System.out.println("read CONFIGFILE.txt");
 //         		btnNewButton_1.doClick();
          		
-         		if(rdbtnNewRadioButton.isSelected()){
-         			System.out.println("running " + rdbtnNewRadioButton.getText());
+         		if(pearson.isSelected()){
+         			System.out.println("running " + pearson.getText());
          			int howMany = Integer.parseInt(textField_K.getText());
          			Nearest_Neighbor neighbors = new Nearest_Neighbor(howMany, "max");
          			for(int i=0; i< data.M; i++){
@@ -161,8 +160,8 @@ public class recomendation_system extends JPanel {
          			}
          			neighbors.print_matrix();
          		}
-         		else if(rdbtnNewRadioButton_1.isSelected()){
-         			System.out.println("running " + rdbtnNewRadioButton_1.getText());
+         		else if(jaccard.isSelected()){
+         			System.out.println("running " + jaccard.getText());
          			int howMany = Integer.parseInt(textField_K.getText());
          			Nearest_Neighbor neighbors = new Nearest_Neighbor(howMany, "min");
          			for(int i=0; i< data.M; i++){
@@ -170,8 +169,28 @@ public class recomendation_system extends JPanel {
          			}
          			neighbors.print_matrix();
          		}
-         		else if(rdbtnNewRadioButton_2.isSelected()){
-         			System.out.println("running " + rdbtnNewRadioButton_2.getText());
+         		else if(cosine.isSelected()){
+         			System.out.println("running " + cosine.getText());
+         			int howMany = Integer.parseInt(textField_K.getText());
+         			Nearest_Neighbor neighbors = new Nearest_Neighbor(howMany, "max");
+         			double[] vector1,vector2;
+         			vector1 = new double[data.M];
+         			vector2 = new double[data.M];
+         			for(int i=0; i< data.M; i++){
+         				vector1[i] = data.data[i][0];
+         				
+         			}
+         			for(int j=0; j<data.N; j++){
+         				for(int i=0; i< data.M; i++){
+         					vector2[i] = data.data[i][j];
+         				
+         				} 
+         				double val = Cosine_similarity.compute(vector1, vector2);
+         				neighbors.add_new_value(j, (float)val);
+
+         			}
+         			neighbors.print_matrix();
+         			
          		}
          		
          	}
@@ -179,15 +198,16 @@ public class recomendation_system extends JPanel {
     }
     
     public void init_components(){
-
-         textPane = new JTextPane();
-         textPane.setBackground(Color.GRAY);
          
          JPanel panel_1 = new JPanel();
          
          JPanel panel_2 = new JPanel();
          
          btnRun = new JButton("run");
+         
+         JScrollPane scrollPane = new JScrollPane();
+         
+         JPanel panel_3 = new JPanel();
 
          GroupLayout groupLayout = new GroupLayout(this);
          groupLayout.setHorizontalGroup(
@@ -196,29 +216,50 @@ public class recomendation_system extends JPanel {
          			.addContainerGap()
          			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
          				.addGroup(groupLayout.createSequentialGroup()
-         					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+         					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
          					.addGap(30))
          				.addGroup(groupLayout.createSequentialGroup()
          					.addComponent(panel_1, 0, 0, Short.MAX_VALUE)
          					.addGap(102)))
          			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
          				.addComponent(btnRun)
-         				.addComponent(textPane, GroupLayout.PREFERRED_SIZE, 418, GroupLayout.PREFERRED_SIZE))
+         				.addGroup(groupLayout.createSequentialGroup()
+         					.addGap(8)
+         					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+         					.addPreferredGap(ComponentPlacement.RELATED)
+         					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
+         					.addGap(24)))
          			.addGap(28))
          );
          groupLayout.setVerticalGroup(
-         	groupLayout.createParallelGroup(Alignment.TRAILING)
+         	groupLayout.createParallelGroup(Alignment.LEADING)
          		.addGroup(groupLayout.createSequentialGroup()
-         			.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 209, Short.MAX_VALUE)
+         			.addGap(109)
+         			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+         			.addContainerGap(302, Short.MAX_VALUE))
+         		.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+         			.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+         				.addGroup(groupLayout.createSequentialGroup()
+         					.addContainerGap()
+         					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE))
+         				.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 209, Short.MAX_VALUE))
          			.addGap(9)
-         			.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
-         			.addContainerGap())
-         		.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-         			.addComponent(textPane, GroupLayout.PREFERRED_SIZE, 212, GroupLayout.PREFERRED_SIZE)
-         			.addPreferredGap(ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
-         			.addComponent(btnRun)
-         			.addGap(71))
+         			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+         				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+         					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE)
+         					.addContainerGap())
+         				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+         					.addComponent(btnRun)
+         					.addGap(71))))
          );
+                  panel_3.setLayout(new GridLayout(0, 1, 0, 0));
+                  
+                  JScrollPane scrollPane_1 = new JScrollPane();
+                  panel_3.add(scrollPane_1);
+                  
+                           textPane = new JTextPane();
+                           scrollPane_1.setViewportView(textPane);
+                           textPane.setBackground(Color.GRAY);
          panel_2.setLayout(new GridLayout(0, 1, 0, 0));
          
          btnNewButton_1 = new JButton("read values");
@@ -291,15 +332,15 @@ public class recomendation_system extends JPanel {
          });
          panel_1.setLayout(new GridLayout(0, 1, 0, 0));
          ButtonGroup group = new ButtonGroup();
-         rdbtnNewRadioButton_1 = new JRadioButton("Jaccard");
-         panel_1.add(rdbtnNewRadioButton_1);
-         group.add(rdbtnNewRadioButton_1);
-         rdbtnNewRadioButton_2 = new JRadioButton("Cosine");
-         panel_1.add(rdbtnNewRadioButton_2);
-         group.add(rdbtnNewRadioButton_2);
-         rdbtnNewRadioButton = new JRadioButton("Pearson");
-         panel_1.add(rdbtnNewRadioButton);
-         group.add(rdbtnNewRadioButton);
+         jaccard = new JRadioButton("Jaccard");
+         panel_1.add(jaccard);
+         group.add(jaccard);
+         cosine = new JRadioButton("Cosine");
+         panel_1.add(cosine);
+         group.add(cosine);
+         pearson = new JRadioButton("Pearson");
+         panel_1.add(pearson);
+         group.add(pearson);
          setLayout(groupLayout);
     	
     	
