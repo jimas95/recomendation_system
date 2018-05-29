@@ -9,7 +9,6 @@ public class Cosine_similarity {
 			return 0.0 ;
 		}
 		int length = vector1.length;
-		System.out.println(length);
 		Double sum =  0.0;
 		Double sum1 = 0.0;
 		Double sum2 = 0.0;

@@ -24,7 +24,7 @@ public class recomendation_system extends JPanel {
 
     
     static GUI gui;
-    static Data_Matrix data ;
+    static Data_Matrix data,data_predicted ;
     static int T,N,M,X,K;
     
 	public  static void main(String args[]) {
@@ -50,28 +50,82 @@ public class recomendation_system extends JPanel {
     }
 
 	
-	public static void compute_cosine(){
+	public static void find_all_neighbors(){
+		Nearest_Neighbor[] all_neighbors = new Nearest_Neighbor[data.N];
+		for(int j=0; j<data.N; j++){
+			all_neighbors[j] = new Nearest_Neighbor(data.M, "max");
+			all_neighbors[j] = compute_cosine(j);
+		}
 		
+//		float sum = 0;
+//		all_neighbors[0].print_matrix();
+//        for(int i=0; i< data.M; i++){
+//            if(data.data[i][0]==-1){
+//            	System.out.println("found null at : "+ i);
+//            	for(int k=0; k<K; k++){
+//            		sum = sum + all_neighbors[0].matrix[k].value*data.data[i][all_neighbors[0].matrix[k].index];
+//            	}
+//            	sum = sum / all_neighbors[0].get_sum_similaty();
+//            	System.out.println("new value: " + sum );
+//            }
+//            
+//        }
+		///////////////////////////////
+        for(int i=0; i< data.M; i++){
+        	for(int j=0; j<data.N; j++){
+        		data_predicted.data[i][j] = data.data[i][j];
+        		if(data.data[i][j]==-1){
+        			data_predicted.data[i][j] = (int)(find_predicted_val(all_neighbors[j], data, i, j));
+        		}
+        	}
+        }
+        data_predicted.print_data_matrix();
+        
+	}
+	
+	public static float find_predicted_val(Nearest_Neighbor geitones , Data_Matrix data , int i , int j){
+		float sum = 0;
+		float sum_sim=0;
+		for(int k=0; k<geitones.size; k++){
+			if(data.data[i][geitones.matrix[k].index]!=-1){
+				sum = sum + geitones.matrix[k].value*data.data[i][geitones.matrix[k].index];
+				sum_sim = sum_sim + geitones.matrix[k].value;
+			}
+		}
+		
+		
+		float val = sum / sum_sim;
+		return val ;
+	}
+	
+	public static Nearest_Neighbor compute_cosine(int index_vector){
 		int howMany = K;
         Nearest_Neighbor neighbors = new Nearest_Neighbor(howMany, "max");
         double[] vector1,vector2;
         vector1 = new double[data.M];
         vector2 = new double[data.M];
+        
+        
+        
         for(int i=0; i< data.M; i++){
-            vector1[i] = data.data[i][0];
+            vector1[i] = data.data[i][index_vector];
             
         }
         
         for(int j=0; j<data.N; j++){ // find all similaritis 
-            for(int i=0; i< data.M; i++){
-                vector2[i] = data.data[i][j];
-            
-            } 
-            double val = Cosine_similarity.compute(vector1, vector2);
-            neighbors.add_new_value(j, (float)val);
-
+        	
+        	if(index_vector!=j ){
+	            for(int i=0; i< data.M; i++){
+	                vector2[i] = data.data[i][j];
+	            
+	            } 
+	            double val = Cosine_similarity.compute(vector1, vector2);
+	            neighbors.add_new_value(j, (float)val);
+	
+	        }
         }
-        neighbors.print_matrix();
+//        neighbors.print_matrix();
+        return neighbors ;
 	}
 
     public static void readTXT(){
@@ -136,6 +190,10 @@ public class recomendation_system extends JPanel {
         data = new Data_Matrix(M, N, X);
         data.print_data_matrix();
         data.print_data_matrix_graphics(gui.textPane);
+        
+        data_predicted = new Data_Matrix(M, N, X);
+//        data_predicted.print_data_matrix();
+//        data_predicted.print_data_matrix_graphics(gui.textPane);
     }
     
 }

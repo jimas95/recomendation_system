@@ -76,7 +76,7 @@ public class GUI extends JPanel{
 	         		}
 	         		else if(cosine.isSelected()){
 	         			System.out.println("running " + cosine.getText());
-	         			recomendation_system.compute_cosine();
+	         			recomendation_system.find_all_neighbors();
 	         		}
 	         		
 	         	}
@@ -96,7 +96,7 @@ public class GUI extends JPanel{
 	                textField_N.setText(Integer.toString(recomendation_system.N));
 	                textField_M.setText(Integer.toString(recomendation_system.M));
 	                textField_X.setText(Integer.toString(recomendation_system.X)+"%");
-	                textField_K.setText(Integer.toString(recomendation_system.X));
+	                textField_K.setText(Integer.toString(recomendation_system.K));
 
 		         		
 		         	}
