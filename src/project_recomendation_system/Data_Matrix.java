@@ -20,6 +20,46 @@ public class Data_Matrix {
 	
 	
 	
+	public Data_Matrix get_error_matrix(Data_Matrix prediction){
+		
+		Data_Matrix error = new Data_Matrix(this.M, this.N, this.X); // initialize matrix 
+		
+        for(int i=0; i< this.M; i++){
+        	for(int j=0; j<this.N; j++){
+        		if(data[i][j] !=-1){
+        			error.data[i][j] = Math.abs(data[i][j] - prediction.data[i][j]);
+        		}
+        		else{
+        			error.data[i][j] = -1 ;
+        		}
+        	}
+        }
+        
+        return error ;
+	}
+	
+	public float get_total_error(Data_Matrix prediction){
+		
+		Data_Matrix error = new Data_Matrix(this.M, this.N, this.X);
+		
+		error = get_error_matrix(prediction);
+		float sum =0 ;
+		int total = 0 ; 
+        for(int i=0; i< this.M; i++){
+        	for(int j=0; j<this.N; j++){
+        		if(data[i][j] !=-1){
+        			sum = sum +error.data[i][j];
+        			total +=1 ;
+        		}
+        	}
+        }
+        
+        return sum/total ;
+		
+	}
+	
+	
+	
 	public void create_matrix(){
 		
 		data = new int[M][N];
@@ -32,11 +72,18 @@ public class Data_Matrix {
 			}
 		}
 		
-		for(int i=0; i<M; i++){ // fill matrix with numbers 0 --> 5
-			for(int j=0; j<N; j++){	
-				data[i][j] = rand.nextInt(6);				
-			}
-		}
+		
+//		for(int i=0; i<M; i++){ // fill matrix with numbers 0 --> 5
+//			for(int j=0; j<N; j++){	
+//				if(i<M/2){
+//					data[i][j] = 5 ;
+//				}
+//				else{
+//					data[i][j] = 5 ;
+//				}
+//				
+//			}
+//		}
 		
 		float num_of_to_elements_remove = this.M*this.N*(100 - this.X)/100 ;
 		
@@ -84,7 +131,6 @@ public class Data_Matrix {
 		}
 		panel.setText(data_string);
 	}
-	
 	
 
 }
