@@ -119,7 +119,7 @@ public class similarity {
 		}
 		
 		Double val = Math.abs(Cosine(vector1, vector2));
-		System.err.println(val);
+//		System.err.println(val);
 		return val;
 	}
 }
