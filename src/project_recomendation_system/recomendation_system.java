@@ -34,9 +34,12 @@ public class recomendation_system extends JPanel {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	recomendation_system project = new recomendation_system();
+//            	recomendation_system project = new recomendation_system();
+            	
+            	recomendation_system.gui = new GUI();
+            	
                 JFrame f = new JFrame("recomendation system");
-                f.getContentPane().add(project.gui);
+                f.getContentPane().add(recomendation_system.gui);
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 f.pack();
                 f.setVisible(true);
@@ -177,7 +180,7 @@ public class recomendation_system extends JPanel {
         	}
         }
         
-        data.print_data_matrix_graphics(gui.textPane); // print our data matrix in gui
+        data.print_data_matrix_graphics(gui.model); // print our data matrix in gui
 		
 	}
 	
@@ -185,8 +188,20 @@ public class recomendation_system extends JPanel {
 		
 		for(int iterations=0; iterations<T; iterations++){
 	 		createMatrix(); // creates new matrix 
-	
+	 		gui.textPane.setText(gui.textPane.getText() +"\nIteration : "+ iterations);
 	 		for(int method=1; method<4; method++){
+	 			
+		 		String name=null;
+		 		
+		 		switch(method){
+		 		case 1:name = "Jacard"; break ; 
+		 		case 2:name = "Cosine"; break ;
+		 		case 3:name = "Pearson"; break;
+		 		}
+		 		
+		 		
+		 		gui.textPane.setText(gui.textPane.getText() +"\ncomputing : "+ name + " similarity");
+		 		
 		 		find_all_neighbors(method);
 				prediction();
 				float error = find_error();
@@ -212,12 +227,20 @@ public class recomendation_system extends JPanel {
 														  // find k-neighbors --> predict new values --> calculate error 
 		
 	 		createMatrix(); // creates new matrix 
-	
-		 		find_all_neighbors(method);
-				prediction();
-				float error = find_error();		
-				gui.add_new_data(method,error);
-				write_TXT_data("makis",5,error);
+	 		String name=null;
+	 		
+	 		switch(method){
+	 		case 1:name = "Jacard"; break ; 
+	 		case 2:name = "Cosine"; break ;
+	 		case 3:name = "Pearson"; break;
+	 		}
+	 		
+	 		gui.textPane.setText(gui.textPane.getText() +"\ncomputing : "+ name + " similarity");
+	 		
+	 		find_all_neighbors(method);
+			prediction();
+			float error = find_error();		
+			gui.add_new_data(method,error);
 	}
 	
 	
@@ -225,21 +248,11 @@ public class recomendation_system extends JPanel {
 	
 	public static float find_error(){
 		
-//        for(int i=0; i< data.M; i++){
-//        	for(int j=0; j<data.N; j++){
-//        		if(data.data[i][j] !=-1){
-//        			error_matrix.data[i][j] = Math.abs(data.data[i][j] - data_predicted.data[i][j]);
-//        		}
-//        		else{
-//        			error_matrix.data[i][j] = -1 ;
-//        		}
-//        	}
-//        } 
 
 		error_matrix = data.get_error_matrix(data_predicted);
-//        System.out.println("error matrix:");
-//        error_matrix.print_data_matrix();
-        System.out.println("total error :" + data.get_total_error(data_predicted));
+		error_matrix.print_data_matrix_graphics(gui.model_error);
+
+        gui.textPane.setText(gui.textPane.getText() +"\ntotal error :" + data.get_total_error(data_predicted) );
 		return data.get_total_error(data_predicted);
 		
 	}
@@ -252,7 +265,6 @@ public class recomendation_system extends JPanel {
 			all_neighbors[j] = find_k_neighbors(j,case_similarity);
 		}
 		
-//		prediction();
 	}
 	
 	public static void prediction(){
@@ -264,6 +276,7 @@ public class recomendation_system extends JPanel {
     
         	}
         }
+        data_predicted.print_data_matrix_graphics(gui.model_prediction);
 //        System.out.println("new predicted matrix!");
 //        data_predicted.print_data_matrix();
 //		find_error();
@@ -330,7 +343,7 @@ public class recomendation_system extends JPanel {
     	String path = System.getProperty("user.dir");
     	path = path + "/CONFIGFILE.TXT";
 //    	Scanner fileIn = new Scanner(new File(path));
-    	System.out.println(path);
+//    	System.out.println(path);
     	
     	try {
 			Scanner fileIn = new Scanner(new File(path));
@@ -338,7 +351,6 @@ public class recomendation_system extends JPanel {
 			while(fileIn.hasNextLine()){
 				
 				String  input_data;
-				int value ;
 								
 				input_data = fileIn.nextLine() ;
 				switch(input_data.charAt(0)){
@@ -352,9 +364,9 @@ public class recomendation_system extends JPanel {
 				}
 			}
 			
+			fileIn.close();
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -435,7 +447,6 @@ public class recomendation_system extends JPanel {
 
 	        	
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}    	
     }
@@ -454,7 +465,6 @@ public class recomendation_system extends JPanel {
 			writer.write("K" + gui.textField_K.getText()+"\n");
 			writer.close(); 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -465,7 +475,7 @@ public class recomendation_system extends JPanel {
         data_predicted = new Data_Matrix(M, N, X);
         error_matrix = new Data_Matrix(M, N, X);
         
-        data.print_data_matrix_graphics(gui.textPane); // print our data matrix in gui
+        data.print_data_matrix_graphics(gui.model); // print our data matrix in gui
         
 
 //        data_predicted.print_data_matrix();

@@ -1,43 +1,27 @@
 package project_recomendation_system;
 
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
+
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.TableColumnModelEvent;
 import javax.swing.JLabel;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ScrollPaneConstants;
 import java.awt.GridLayout;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
-
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.Font;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -46,6 +30,7 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.JToggleButton;
+import javax.swing.JTabbedPane;
 
 
 
@@ -75,6 +60,9 @@ public class GUI extends JPanel{
 	private JButton btnNewButton_4;
 	private JButton btnNewButton_5;
 	public  JToggleButton reverse;
+	JTable table_data;
+	private JPanel panel_5;
+	public DefaultTableModel model,model_prediction,model_error;
 	
 	public GUI(){
 		setBorder(UIManager.getBorder("RadioButtonMenuItem.border"));
@@ -167,6 +155,7 @@ public class GUI extends JPanel{
 		         		seriesJacard.clear();
 		         		seriesCosine.clear();
 		         		seriesPearson.clear();
+		         		textPane.setText(" ");
 		         	}
 		         });
 	    	
@@ -177,15 +166,15 @@ public class GUI extends JPanel{
 	         		
 
 	         		if(jaccard.isSelected()){
-	         			System.out.println("running " + jaccard.getText());
+//	         			System.out.println("running " + jaccard.getText());
 	         			recomendation_system.compute_one_iterations(1);
 	         		}
 	         		else if(cosine.isSelected()){
-	         			System.out.println("running " + cosine.getText());
+//	         			System.out.println("running " + cosine.getText());
 	         			recomendation_system.compute_one_iterations(2);
 	         		}
 	         		else if(pearson.isSelected()){
-	         			System.out.println("running " + pearson.getText());
+//	         			System.out.println("running " + pearson.getText());
 	         			recomendation_system.compute_one_iterations(3);
 	         		}
 	         	}
@@ -206,13 +195,6 @@ public class GUI extends JPanel{
 	                textField_M.setText(Integer.toString(recomendation_system.M));
 	                textField_X.setText(Integer.toString(recomendation_system.X)+"%");
 	                textField_K.setText(Integer.toString(recomendation_system.K));
-//	                https://stackoverflow.com/questions/25080951/jtable-set-cell-color-at-specific-value
-                
-//	                DefaultTableModel model = new DefaultTableModel();
-//	                model.addRow(new Object[]{"Column 1", "Column 2", "Column 3","adad"});
-//	                model.addRow(new Object[]{"Column 1", "Column 2", "Column 3","adad"});
-//	                table.setModel(model);
-                
 	         	}
 	         });
 	    }
@@ -224,12 +206,15 @@ public class GUI extends JPanel{
 	         JPanel panel_2 = new JPanel();
 	         
 	         JScrollPane scrollPane = new JScrollPane();
-	         
+//	         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+//	         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	         JPanel panel_3 = new JPanel();
 	         
 	         panel_4 = new JPanel();
 	         
 	         clear = new JButton("clear");
+	         
+	         panel_5 = new JPanel();
 
 
 
@@ -244,60 +229,88 @@ public class GUI extends JPanel{
 	         			.addGap(38)
 	         			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 	         			.addPreferredGap(ComponentPlacement.RELATED)
-	         			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-	         				.addComponent(clear, Alignment.TRAILING)
-	         				.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-	         				.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE))
-	         			.addGap(52))
+	         			.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+	         				.addComponent(clear)
+	         				.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+	         				.addGroup(groupLayout.createSequentialGroup()
+	         					.addComponent(panel_5, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+	         					.addGap(18)
+	         					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
+	         			.addContainerGap())
 	         );
 	         groupLayout.setVerticalGroup(
-	         	groupLayout.createParallelGroup(Alignment.TRAILING)
+	         	groupLayout.createParallelGroup(Alignment.LEADING)
 	         		.addGroup(groupLayout.createSequentialGroup()
-	         			.addGap(109)
-	         			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-	         			.addContainerGap(307, Short.MAX_VALUE))
-	         		.addGroup(groupLayout.createSequentialGroup()
-	         			.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-	         				.addGroup(groupLayout.createSequentialGroup()
-	         					.addContainerGap()
-	         					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
-	         				.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 219, Short.MAX_VALUE))
 	         			.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+	         				.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 219, Short.MAX_VALUE)
+	         				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	         				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+	         					.addContainerGap()
+	         					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+	         						.addComponent(panel_3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+	         						.addComponent(panel_5, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+	         					.addPreferredGap(ComponentPlacement.RELATED)))
+	         			.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 	         				.addGroup(groupLayout.createSequentialGroup()
 	         					.addGap(27)
 	         					.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
 	         					.addPreferredGap(ComponentPlacement.RELATED)
 	         					.addComponent(clear))
-	         				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+	         				.addGroup(groupLayout.createSequentialGroup()
 	         					.addGap(4)
-	         					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
+	         					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)))
 	         			.addGap(11))
 	         );
+	         
+	         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+	         panel_5.setLayout(new GridLayout(0, 1, 0, 0));
+	         
+
+	         
 	         panel_4.setLayout(new GridLayout(1, 0, 0, 0));
-             // Columns for table
-             String[] columns = {"Name", "Age", "Gender"};
-             
-             // 2D array is used for data in table
-             String[][] data = {{"John", "18", "Male"},
-                     {"Daisy", "19", "Female"},
-                     {"Dave", "23", "Male"},
-                     {"Jake", "30", "Male"}};
-     
-//	         	table = new JTable(data, columns);
-	         	
-                DefaultTableModel model = new DefaultTableModel();
-                model.addRow(new Object[]{"Column 1", "Column 2", "Column 3","adad"});
-                model.addRow(new Object[]{"Column 1", "Column 2", "Column 3","adad"});
-	                  panel_3.setLayout(new GridLayout(0, 1, 0, 0));
+
+	         
+	           model = new DefaultTableModel(20, 20);
+
+	           table_data = new JTable(model);
+	           table_data.setFillsViewportHeight(true);
+
+	           
+		         JScrollPane scrollPane_2 = new JScrollPane(table_data);
+		         scrollPane_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		         scrollPane_2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		         tabbedPane.add("data", scrollPane_2);
+		         
+		         model_prediction = new DefaultTableModel(20, 20);
+		         JTable table_prediction = new JTable(model_prediction);
+		         JScrollPane scrollPane_prediction = new JScrollPane(table_prediction);
+		         scrollPane_prediction.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		         scrollPane_prediction.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		         tabbedPane.add("prediction", scrollPane_prediction);
+		         
+		         
+		         model_error = new DefaultTableModel(20, 20);
+		         JTable table_error = new JTable(model_error);
+		         JScrollPane scrollPane_error = new JScrollPane(table_error);
+		         scrollPane_error.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		         scrollPane_error.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		         tabbedPane.add("error", scrollPane_error);
+		         
+		         
+		         panel_5.add(tabbedPane);
+
+            panel_3.setLayout(new GridLayout(0, 1, 0, 0));
 	                  
-	                  JScrollPane scrollPane_1 = new JScrollPane();
-	                  panel_3.add(scrollPane_1);
+	        JScrollPane scrollPane_1 = new JScrollPane();
+	        scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+	        scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+          	panel_3.add(scrollPane_1);
 	                  
-	                           textPane = new JTextPane();
-	                           textPane.setForeground(new Color(102, 0, 255));
-	                           textPane.setFont(new Font("Calibri", Font.PLAIN, 11));
-	                           scrollPane_1.setViewportView(textPane);
-	                           textPane.setBackground(new Color(51, 204, 102));
+           textPane = new JTextPane();
+           textPane.setForeground(new Color(102, 0, 255));
+           textPane.setFont(new Font("Calibri", Font.PLAIN, 11));
+           scrollPane_1.setViewportView(textPane);
+           textPane.setBackground(new Color(51, 204, 102));
 	         panel_2.setLayout(new GridLayout(0, 1, 0, 0));
 	         
 	         btnNewButton_1 = new JButton("read values");

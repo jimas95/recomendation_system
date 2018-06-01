@@ -2,9 +2,9 @@ package project_recomendation_system;
 
 import java.util.Random;
 
-import javax.swing.JTextPane;
 
-import javafx.scene.chart.PieChart.Data;
+import javax.swing.table.DefaultTableModel;
+
 
 public class Data_Matrix {
 	
@@ -114,22 +114,20 @@ public class Data_Matrix {
 	}
 	
 	
-	public void print_data_matrix_graphics(JTextPane panel){
-		String data_string = ""; 
+	public void print_data_matrix_graphics(DefaultTableModel model){
+
+		model.setRowCount(this.M);
+		model.setColumnCount(this.N);
+
 		for(int i=0; i<M; i++){
 			for(int j=0; j<N; j++){
-//				data_string = data_string + data[i][j] + "\t" ;
-				if(data[i][j]!=-1){
-					data_string = data_string + data[i][j] + "\t" ;
+				
+				model.setValueAt(Integer.toString(data[i][j]), i, j);
+				if(data[i][j]==-1){
+					model.setValueAt("null", i, j);
 				}
-				else{
-					data_string = data_string + "null" + "\t" ; 
-				}
-
 			}
-			data_string = data_string +"\n" ;
 		}
-		panel.setText(data_string);
 	}
 	
 
