@@ -171,7 +171,7 @@ public class recomendation_system extends JPanel {
 		M = temp ;
         data = new Data_Matrix(M, N, X);
         data_predicted = new Data_Matrix(M, N, X);
-        error_matrix = new Data_Matrix(M, N, X);
+        error_matrix = new Data_Matrix(M+1, N+1, X);
         
         for(int i=0; i< data.M; i++){
         	for(int j=0; j<data.N; j++){
@@ -248,8 +248,11 @@ public class recomendation_system extends JPanel {
 	
 	public static float find_error(){
 		
+		float error;
 
 		error_matrix = data.get_error_matrix(data_predicted);
+		error = data.get_total_error(data_predicted);
+		error_matrix.data[M][N] = error ;
 		error_matrix.print_data_matrix_graphics(gui.model_error);
 
         gui.textPane.setText(gui.textPane.getText() +"\ntotal error :" + data.get_total_error(data_predicted) );
@@ -406,7 +409,7 @@ public class recomendation_system extends JPanel {
 	        		if(data.data[i][j]!=-1){
 	        			writer.write(" "); // fixes alignment of data
 	        		}
-	        		writer.write(Integer.toString(data.data[i][j]) + "\t");
+	        		writer.write(Float.toString(data.data[i][j]) + "\t");
 	        		
 	        	}
 	        	writer.write("\n");
@@ -418,7 +421,7 @@ public class recomendation_system extends JPanel {
 
 	        	for(int j=0; j<data.N; j++){
 
-	        		writer.write(Integer.toString(data_predicted.data[i][j]) + "\t");
+	        		writer.write(Float.toString(data_predicted.data[i][j]) + "\t");
 	        		
 	        	}
 	        	writer.write("\n");
@@ -434,7 +437,7 @@ public class recomendation_system extends JPanel {
 	        		if(data.data[i][j]!=-1){
 	        			writer.write(" "); // fixes alignment of data
 	        		}
-	        		writer.write(Integer.toString(error_matrix.data[i][j]) + "\t");
+	        		writer.write(Float.toString(error_matrix.data[i][j]) + "\t");
 	        		
 	        	}
 	        	writer.write("\n");
@@ -473,7 +476,7 @@ public class recomendation_system extends JPanel {
     public static void createMatrix(){
         data = new Data_Matrix(M, N, X);
         data_predicted = new Data_Matrix(M, N, X);
-        error_matrix = new Data_Matrix(M, N, X);
+        error_matrix = new Data_Matrix(M+1, N+1, X);
         
         data.print_data_matrix_graphics(gui.model); // print our data matrix in gui
         
